@@ -1,5 +1,5 @@
 ---
-title: "Bayesian nonparametrics example (1): Survival analysis"
+title: "Bayesian nonparametrics example (2): Survival analysis"
 subtitle: "NIMBLE ENAR webinar module"
 author: "NIMBLE Development Team"
 output:
@@ -23,7 +23,7 @@ To use this code, you'll need to install NIMBLE from our Github repository:
 
 ```{r, install-nimble, eval=FALSE}
 library(devtools)
-install_github('nimble-dev/nimble', ref = 'BNP')
+install_github('nimble-dev/nimble/packages/nimble', ref = 'BNP')
 ```
 
 # Accelerated failure time model
@@ -104,7 +104,7 @@ codeAFT <- nimbleCode({
     }
     xi[1:n] ~ dCRP(conc, size = n) ## CRP for mixture components
     conc ~ dgamma(1, 1)
-    for(i in 1:nSub)
+    for(i in 1:nSub)    ## cap the number of clusters for faster computation
         etaTilde[i] ~ dunif(b0, B0) ## base measure H_b
     alpha ~ dunif(a0, A0)
     for(j in 1:p)
@@ -162,7 +162,7 @@ Note the poor mixing of $\alpha$ - we'd want to run this for longer and also loo
 
 # Interpreting the regression coefficients
 
-The model (here simply the parametric Weibull model) can be reparameterized in terms of $\beta = \delta / \alpha$.
+The model (here simply the parametric Weibull model) can be reparameterized in terms of $\beta = - \delta / \alpha$.
 
 The result is that the scaling of time does not depend on $\alpha$
 

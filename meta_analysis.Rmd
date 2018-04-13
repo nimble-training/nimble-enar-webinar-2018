@@ -25,7 +25,7 @@ To use the BNP versions of the meta analysis, you'll need to install NIMBLE from
 
 ```{r, install, eval=FALSE}
 library(devtools)
-install_github('nimble-dev/nimble', ref = 'BNP')
+install_github('nimble-dev/nimble/packages/nimble', ref = 'BNP')
 ```
 
 # Meta analysis example
@@ -147,7 +147,7 @@ codeBNP <- nimbleCode({
     # CRP for clustering studies to mixture components
     xi[1:nStudies] ~ dCRP(conc, size = nStudies)
     # hyperparameters
-    conc ~ dgamma(1, 1)
+    conc ~ dgamma(1, 1)      # 'alpha' in the CRP discussion
     mu0 ~ dflat()
     sd0 ~ dunif(0, 100)
     a0 ~ dunif(0, 100)

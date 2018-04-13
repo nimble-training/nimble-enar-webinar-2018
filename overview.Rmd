@@ -104,7 +104,7 @@ For the Bayesian nonparametrics we'll discuss in the meta-analysis and survival 
 
 ```
 library(devtools)
-install_github('nimble-dev/nimble', ref = 'BNP')
+install_github('nimble-dev/nimble/packages/nimble', ref = 'BNP')
 ```
 
 

@@ -86,7 +86,7 @@ r &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">
      <span class="dt">nrow =</span> <span class="dv">2</span>)
               
 littersConsts &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">G =</span> G, <span class="dt">N =</span> N, <span class="dt">n =</span> n)
-littersData =<span class="st"> </span><span class="kw">list</span>(<span class="dt">r =</span> r)
+littersData &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">r =</span> r)
 littersInits &lt;-<span class="st"> </span><span class="kw">list</span>( <span class="dt">a =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">b=</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>) )
 
 littersModel &lt;-<span class="st"> </span><span class="kw">nimbleModel</span>(littersCode, 
@@ -113,7 +113,7 @@ cLittersMCMC &lt;-<span class="st"> </span><span class="kw">compileNimble</span>
 nburn &lt;-<span class="st"> </span><span class="dv">1000</span>
 <span class="kw">set.seed</span>(<span class="dv">1</span>)
 samples &lt;-<span class="st"> </span><span class="kw">runMCMC</span>(cLittersMCMC, <span class="dt">niter =</span> niter, <span class="dt">nburnin =</span> nburn,
-<span class="dt">inits =</span> littersInits, <span class="dt">nchains =</span> <span class="dv">1</span>, <span class="dt">samplesAsCodaMCMC =</span> <span class="ot">TRUE</span>)</code></pre></div>
+        <span class="dt">inits =</span> littersInits, <span class="dt">nchains =</span> <span class="dv">1</span>, <span class="dt">samplesAsCodaMCMC =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## running chain 1...</code></pre>
 <pre><code>## |-------------|-------------|-------------|-------------|
 ## |-------------------------------------------------------|</code></pre>
@@ -219,6 +219,7 @@ littersConf$<span class="kw">printSamplers</span>()</code></pre></div>
 ## [35] slice sampler: a[2]
 ## [36] slice sampler: b[2]</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">littersMCMC &lt;-<span class="st"> </span><span class="kw">buildMCMC</span>(littersConf)
+## we need 'resetFunctions' because we are rebuilding the MCMC for an existing model
 cLittersMCMC &lt;-<span class="st"> </span><span class="kw">compileNimble</span>(littersMCMC, <span class="dt">project =</span> littersModel, <span class="dt">resetFunctions =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## compiling... this may take a minute. Use 'showCompilerOutput = TRUE' to see C++ compiler details.</code></pre>
 <pre><code>## compilation finished.</code></pre>
@@ -231,7 +232,7 @@ samplesSlice &lt;-<span class="st"> </span><span class="kw">runMCMC</span>(cLitt
 </div>
 <div id="customizing-samplers-initial-results" class="slide section level1">
 <h1>Customizing samplers: Initial results</h1>
-<p>We can look at diagnostics and see if the change in samplers had an effect. Interestingly, despite the posterior correlation between <code>alpha</code> and <code>beta</code>, a simple change just to the univariate sampler for <code>alpha</code> has had a real effect on MCMC performance.</p>
+<p>We can look at diagnostics and see if the change in samplers had an effect. Interestingly, despite the posterior correlation between <code>alpha</code> and <code>beta</code>, a simple change just to the univariate sampler for <code>alpha</code> has had some effect on MCMC performance.</p>
 <p>Caveat: the real question is the effective sample size per unit of computation time, but we don't assess that here.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(coda, <span class="dt">warn.conflicts =</span> <span class="ot">FALSE</span>)
 <span class="kw">effectiveSize</span>(samplesSlice)</code></pre></div>
@@ -261,10 +262,10 @@ samplesSlice &lt;-<span class="st"> </span><span class="kw">runMCMC</span>(cLitt
       littersConf$<span class="kw">removeSamplers</span>(h)
 }
 littersConf$<span class="kw">addSampler</span>(<span class="dt">target =</span> <span class="kw">c</span>(<span class="st">'a[1]'</span>,<span class="st">'b[1]'</span>), <span class="dt">type =</span> <span class="st">'RW_block'</span>, 
-<span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adaptInterval =</span> <span class="dv">100</span>))</code></pre></div>
+                              <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adaptInterval =</span> <span class="dv">100</span>))</code></pre></div>
 <pre><code>## Note: Assigning an RW_block sampler to nodes with very different scales can result in low MCMC efficiency.  If all nodes assigned to RW_block are not on a similar scale, we recommend providing an informed value for the &quot;propCov&quot; control list argument, or using the AFSS sampler instead.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">littersConf$<span class="kw">addSampler</span>(<span class="dt">target =</span> <span class="kw">c</span>(<span class="st">'a[2]'</span>,<span class="st">'b[2]'</span>), <span class="dt">type =</span> <span class="st">'RW_block'</span>, 
-<span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adaptInterval =</span> <span class="dv">100</span>))</code></pre></div>
+                              <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adaptInterval =</span> <span class="dv">100</span>))</code></pre></div>
 <pre><code>## Note: Assigning an RW_block sampler to nodes with very different scales can result in low MCMC efficiency.  If all nodes assigned to RW_block are not on a similar scale, we recommend providing an informed value for the &quot;propCov&quot; control list argument, or using the AFSS sampler instead.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">littersMCMC &lt;-<span class="st"> </span><span class="kw">buildMCMC</span>(littersConf)
 cLittersMCMC &lt;-<span class="st"> </span><span class="kw">compileNimble</span>(littersMCMC, <span class="dt">project =</span> littersModel, <span class="dt">resetFunctions =</span> <span class="ot">TRUE</span>)</code></pre></div>
@@ -363,7 +364,7 @@ cLittersMCMC &lt;-<span class="st"> </span><span class="kw">compileNimble</span>
 <pre><code>## compilation finished.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
 samplesCross &lt;-<span class="st"> </span><span class="kw">runMCMC</span>(cLittersMCMC, <span class="dt">niter =</span> niter, <span class="dt">nburnin =</span> nburn,
-<span class="dt">inits =</span> littersInits, <span class="dt">nchains =</span> <span class="dv">1</span>, <span class="dt">samplesAsCodaMCMC =</span> <span class="ot">TRUE</span>)</code></pre></div>
+             <span class="dt">inits =</span> littersInits, <span class="dt">nchains =</span> <span class="dv">1</span>, <span class="dt">samplesAsCodaMCMC =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## running chain 1...</code></pre>
 <pre><code>## |-------------|-------------|-------------|-------------|
 ## |-------------------------------------------------------|</code></pre>
@@ -387,6 +388,7 @@ samplesCross &lt;-<span class="st"> </span><span class="kw">runMCMC</span>(cLitt
 
 </div>
 <p>Much better, though we'd still want to look into the lack of movement for <code>a[1], b[1]</code> in the initial non-burnin samples -- this could probably be improved with better initialization of the top-level block sampler.</p>
+<p><em>Exercise</em>: try modifying the scale or propCov arguments to the cross-level sampler (see how we did this for the standard block sampler) and see if that eliminates the initial stickiness of the sampler.</p>
 </div>
 </body>
 </html>

@@ -126,7 +126,8 @@ Considerations: you'll want to think about how to set up the over-dispersed star
 
 # Assessing MCMC performance from multiple chains
 
-```{r, gelman-rubin, fig.cap=''}
+```{r, gelman-rubin, fig.cap='', fig.height=5, fig.width=5}
+par(mfrow = c(1,1))
 gelman.diag(samples)
 ## and here's a graphical representation of the information
 ts.plot(samples[[1]][ , 'a[1]'], xlab = 'iteration',

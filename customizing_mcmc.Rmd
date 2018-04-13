@@ -80,6 +80,7 @@ for(h in hypers) {
 littersConf$printSamplers()
 
 littersMCMC <- buildMCMC(littersConf)
+## we need 'resetFunctions' because we are rebuilding the MCMC for an existing model
 cLittersMCMC <- compileNimble(littersMCMC, project = littersModel, resetFunctions = TRUE)
 
 set.seed(1)
@@ -89,7 +90,7 @@ samplesSlice <- runMCMC(cLittersMCMC, niter = niter, nburnin = nburn,
 
 # Customizing samplers: Initial results
 
-We can look at diagnostics and see if the change in samplers had an effect. Interestingly, despite the posterior correlation between ```alpha``` and ```beta```, a simple change just to the univariate sampler for ```alpha``` has had a real effect on MCMC performance.
+We can look at diagnostics and see if the change in samplers had an effect. Interestingly, despite the posterior correlation between ```alpha``` and ```beta```, a simple change just to the univariate sampler for ```alpha``` has had some effect on MCMC performance.
 
 Caveat: the real question is the effective sample size per unit of computation time, but we don't assess that here.
 
